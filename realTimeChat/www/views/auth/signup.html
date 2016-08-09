@@ -1,0 +1,32 @@
+<ion-view>
+  <ion-header-bar class="bar-stable">
+    <h1 class="title">Sign Up</h1>
+  </ion-header-bar>
+  <ion-content class="padding">
+    <form name="signup_form" class="form-container" novalidate>
+      <div class="list list-inset">
+        <div class="form_group" >
+          <label class="item item-input" ng-class="{ 'has_error' : signup_form.email.$invalid && !signup_form.email.$pristine }">
+            <input type="email" placeholder="Email" name="email" ng-model="data.email" class="form_control" required>
+          </label>
+          <p ng-show="!signup_form.email.$pristine && signup_form.email.$invalid" class="help-block">Enter a valid email.</p>
+        </div>
+        <div class="form_group" >
+          <label class="item item-input" ng-class="{ 'has_error' : signup_form.password.$invalid && !signup_form.password.$pristine }">
+            <input type="password" placeholder="Password" name="password" ng-model="data.password" ng-minlength="5" ng-pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/" required >
+          </label>
+          <p ng-show="!signup_form.password.$pristine && signup_form.password.$invalid && !signup_form.password.$error.minlength && !signup_form.password.$error.pattern" class="help-block">Your password is required.</p>
+          <p ng-show="signup_form.password.$error.minlength" class="help-block">Your password is too short.</p>
+          <p ng-show="signup_form.password.$error.pattern && !signup_form.password.$error.minlength" class="help-block">Your password must contain one lower and uppercase letter, and one non-alpha character.</p>
+        </div>
+      </div>
+      <button class="button button-block button-energized" ng-click="signup(data)" ng-disabled="signup_form.$invalid">Create Account</button>
+    </form>
+    <button class="button button-block button-clear button-positive button-small" ui-sref="auth.login">
+      Already have an account?
+    </button>
+    <div ng-show="errors">
+      <p class="message error" ng-repeat="error in errors"><b>[{{error.code}}]</b> {{error.msg}}</p>
+    </div>
+  </ion-content>
+</ion-view>
