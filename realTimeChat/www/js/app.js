@@ -93,7 +93,7 @@ angular.module('starter', ['ionic','firebase','starter.controllers','starter.ser
   })
 
   .state('app.chat', {
-    url: '/chat',
+    url: '/chat/:roomKey',
     views: {
       'main-view@': {
         templateUrl: 'views/app/chat.html',

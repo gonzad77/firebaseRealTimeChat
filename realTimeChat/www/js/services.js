@@ -72,4 +72,98 @@ angular.module('starter.services', [])
     return deferred.promise;
   };
 
+})
+
+.service('ChatRoomService', function($q, AuthService){
+  var _firebase = new Firebase("https://ionicthemeschat.firebaseio.com/");
+
+  var user = AuthService.getUser();
+  console.log(user);
+
+  this.createRoom = function(room){
+    //TODO AGREGAR PROMESAS
+    var deferred = $q.defer(),
+        exists = 'false',
+        all_rooms = 'false';
+    _firebase.child('rooms').once('value', function(snapshot){
+      snapshot.forEach(function(childSnapshot){
+        var room_name = snapshot.child(childSnapshot.key()).child('name').val();
+        if(room_name == room.roomName){
+          deferred.reject("This name has been taken");
+          exists = 'true';
+        }
+      })
+      if(exists == 'false'){
+        var push_ref = _firebase.child('rooms').push({'name' : room.roomName});
+        var key = push_ref.key();
+        _firebase.child('rooms').child(push_ref.key()).child('people').child(user.uid).set({'email': AuthService.getUser().password.email,
+                                                      'image' : AuthService.getUser().password.profileImageURL},
+                                                        function(error){
+                                                          if(error){
+                                                            deferred.reject(error);
+                                                          }
+                                                          else{
+                                                            deferred.resolve(key);
+                                                          }
+                                                        });
+      }
+    })
+    // if(exists == 'false' && all_rooms == 'true'){
+    //   var push_ref = _firebase.child('rooms').push({'name' : room.roomName});
+    //   var key = push_ref.key();
+    //   _firebase.child('rooms').child(push_ref.key()).child('people').push({'email': AuthService.getUser().password.email,
+    //                                                 'image' : AuthService.getUser().password.profileImageURL},
+    //                                                   function(error){
+    //                                                     if(error){
+    //                                                       deferred.reject(error);
+    //                                                     }
+    //                                                     else{
+    //                                                       deferred.resolve(push_ref.key);
+    //                                                     }
+    //                                                   });
+    // }
+    return deferred.promise;
+  }
+
+  this.getRooms = function(){
+    var deferred = $q.defer();
+    //TODO AGREGAR PROMESAS
+    _firebase.child('rooms').once('value', function(snapshot){
+      var room_promises = [];
+      snapshot.forEach(function(childSnapshot){
+        var deferredRoom = $q.defer();
+        var room_key = childSnapshot.key();
+        var room_name = snapshot.child(childSnapshot.key()).child('name').val();
+        room_promises.unshift(deferredRoom.promise);
+        var room = {name: room_name,
+                    room_key: room_key}
+        deferredRoom.resolve(room);
+      })
+      $q.all(room_promises)
+      .then(function(result){
+        console.log(room_promises);
+      deferred.resolve(result);
+      })
+    });
+    return deferred.promise;
+  }
+
+})
+
+.service('ChatService', function($q, AuthService){
+  var _firebase = new Firebase("https://ionicthemeschat.firebaseio.com/");
+
+  this.getName = function(room_key){
+    var deferred = $q.defer();
+    getKey = function(key){
+      return key;
+    };
+    _firebase.child('rooms').child(getKey(room_key)).once("value",function(snapshot){
+      var name = snapshot.val().name;
+      deferred.resolve(name);
+    }, function(error){
+      deferred.reject(error);
+    })
+    return deferred.promise;
+  }
 });

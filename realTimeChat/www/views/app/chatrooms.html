@@ -1,0 +1,24 @@
+<ion-view>
+    <ion-content>
+          <div class="list list-inset">
+            <ion-header-bar class="item bar-positive">
+              <h1 class="title">Create room</h1>
+              <div class="buttons">
+                <button class="button button-icon ion-compose" ng-click="showPopUp()">
+                </button>
+              </div>
+            </ion-header-bar>
+            <ion-list ng-show="rooms" class="item">
+              <ion-item class="item-icon-left" ng-repeat="room in rooms" type="item-text-wrap" ng-click="openChatRoom(room)">
+                <i class="icon ion-chatbubble-working"></i>
+                <h2>{{room.name}}</h2>
+              </ion-item>
+            </ion-list>
+          </div>
+        <ion-list ng-hide="rooms.length">
+            <ion-item class="textCenter">
+                <i class="icon ion-loading-c"></i> Loading Rooms
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
