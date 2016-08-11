@@ -45,6 +45,10 @@ angular.module('starter.controllers', [])
   }, function(error){
     console.log(error);
   });
+
+  $scope.close = function(){
+    ChatService.closeChat(room_key);
+  }
 })
 
 .controller('ChatRoomsCtrl', function($scope, $state, $ionicPopup, ChatRoomService, $ionicLoading) {
@@ -55,8 +59,12 @@ angular.module('starter.controllers', [])
   });
 
   $scope.openChatRoom = function(room){
-    console.log(room);
-    $state.go('app.chat', {roomKey: room.room_key});
+    ChatRoomService.addToChat(room)
+    .then(function(result){
+      $state.go('app.chat', {roomKey: room.room_key});
+    }, function(error){
+      console.log(error);
+    })
   }
 
   $scope.showPopUp = function(){

@@ -96,8 +96,8 @@ angular.module('starter.services', [])
       if(exists == 'false'){
         var push_ref = _firebase.child('rooms').push({'name' : room.roomName});
         var key = push_ref.key();
-        _firebase.child('rooms').child(push_ref.key()).child('people').child(user.uid).set({'email': AuthService.getUser().password.email,
-                                                      'image' : AuthService.getUser().password.profileImageURL},
+        _firebase.child('rooms').child(push_ref.key()).child('people').child(user.uid).set({'email': user.password.email,
+                                                      'image' : user.password.profileImageURL},
                                                         function(error){
                                                           if(error){
                                                             deferred.reject(error);
@@ -108,21 +108,23 @@ angular.module('starter.services', [])
                                                         });
       }
     })
-    // if(exists == 'false' && all_rooms == 'true'){
-    //   var push_ref = _firebase.child('rooms').push({'name' : room.roomName});
-    //   var key = push_ref.key();
-    //   _firebase.child('rooms').child(push_ref.key()).child('people').push({'email': AuthService.getUser().password.email,
-    //                                                 'image' : AuthService.getUser().password.profileImageURL},
-    //                                                   function(error){
-    //                                                     if(error){
-    //                                                       deferred.reject(error);
-    //                                                     }
-    //                                                     else{
-    //                                                       deferred.resolve(push_ref.key);
-    //                                                     }
-    //                                                   });
-    // }
     return deferred.promise;
+  }
+
+  this.addToChat = function(room){
+    var deferred = $q.defer();
+    var user = AuthService.getUser();
+    _firebase.child('rooms').child(room.room_key).child('people').child(user.uid).set({'email': user.password.email,
+                                                  'image' : user.password.profileImageURL},
+                                                    function(error){
+                                                      if(error){
+                                                        deferred.reject(error);
+                                                      }
+                                                      else{
+                                                        deferred.resolve("OK");
+                                                      }
+                                                    });
+    return deferred.promise;                                                
   }
 
   this.getRooms = function(){
@@ -165,5 +167,15 @@ angular.module('starter.services', [])
       deferred.reject(error);
     })
     return deferred.promise;
+  }
+
+  this.closeChat = function(room_key){
+    getKey = function(key){
+      return key;
+    };
+    var user = AuthService.getUser(),
+        deferred = $q.defer();
+    _firebase.child("rooms").child(getKey(room_key)).child("people").child(user.uid).set(null);
+
   }
 });
