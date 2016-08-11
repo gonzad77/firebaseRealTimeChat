@@ -47,22 +47,38 @@ angular.module('starter.controllers', [])
   });
 
   $scope.close = function(){
-    ChatService.closeChat(room_key);
+    ChatService.exitChat(room_key)
+    .then(function(result){
+      $state.go('app.chatrooms');
+    },function(error){
+      console.log(error);
+    });
   }
 })
 
-.controller('ChatRoomsCtrl', function($scope, $state, $ionicPopup, ChatRoomService, $ionicLoading) {
+.controller('ChatRoomsCtrl', function($scope, $state, $ionicPopup, ChatRoomService, $ionicLoading, _) {
 
   ChatRoomService.getRooms()
   .then(function(result){
     $scope.rooms = result;
   });
 
+  $scope.doRefresh = function(){
+    ChatRoomService.getRooms()
+    .then(function(result){
+      $scope.rooms = result;
+    });
+  }
+
   $scope.openChatRoom = function(room){
     ChatRoomService.addToChat(room)
     .then(function(result){
       $state.go('app.chat', {roomKey: room.room_key});
     }, function(error){
+      var rooms = _.filter($scope.rooms, function(item){
+        item.key == room.room_key;
+      })
+      $scope.rooms = rooms;
       console.log(error);
     })
   }
@@ -92,6 +108,10 @@ angular.module('starter.controllers', [])
                   //                   key: result});
                   $state.go('app.chat', {roomKey: result});
                 },function(error){
+                  ChatRoomService.getRooms()
+                  .then(function(result){
+                    $scope.rooms = result;
+                  });
                   console.log(error);
                 });
               }

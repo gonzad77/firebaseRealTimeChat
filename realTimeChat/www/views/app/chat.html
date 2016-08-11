@@ -9,6 +9,23 @@
           </div>
         </ion-header-bar>
 
+        <ion-list class="item">
+
+
+         </ion-list>
+
       </div>
     </ion-content>
+    <ion-footer-bar>
+      <!-- <ion-list class="item"> -->
+        <ion-item class="item item-input-inset">
+          <label class="item-input-wrapper">
+              <input type="text" ng-model="m.textMessage" placeholder="Type in your message...">
+          </label>
+          <button ng-click="sendMessage(m.textMessage)" class="button button-icon ion-android-send">
+          </button>
+        </ion-item>
+      <!-- <ion-list> -->
+    </ion-footer-bar>
+
 </ion-view>

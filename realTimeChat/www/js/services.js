@@ -77,11 +77,9 @@ angular.module('starter.services', [])
 .service('ChatRoomService', function($q, AuthService){
   var _firebase = new Firebase("https://ionicthemeschat.firebaseio.com/");
 
-  var user = AuthService.getUser();
-  console.log(user);
 
   this.createRoom = function(room){
-    //TODO AGREGAR PROMESAS
+    var user = AuthService.getUser();
     var deferred = $q.defer(),
         exists = 'false',
         all_rooms = 'false';
@@ -114,17 +112,25 @@ angular.module('starter.services', [])
   this.addToChat = function(room){
     var deferred = $q.defer();
     var user = AuthService.getUser();
-    _firebase.child('rooms').child(room.room_key).child('people').child(user.uid).set({'email': user.password.email,
-                                                  'image' : user.password.profileImageURL},
-                                                    function(error){
-                                                      if(error){
-                                                        deferred.reject(error);
-                                                      }
-                                                      else{
-                                                        deferred.resolve("OK");
-                                                      }
-                                                    });
-    return deferred.promise;                                                
+    _firebase.child('rooms').once('value', function(snapshot){
+      var existsRoom = snapshot.child(room.room_key).exists();
+      if(existsRoom){
+        _firebase.child('rooms').child(room.room_key).child('people').child(user.uid).set({'email': user.password.email,
+                                                      'image' : user.password.profileImageURL},
+                                                        function(error){
+                                                          if(error){
+                                                            deferred.reject(error);
+                                                          }
+                                                          else{
+                                                            deferred.resolve("OK");
+                                                          }
+                                                        });
+      }
+      else{
+        deferred.reject("This room has been closed");
+      }
+    })
+    return deferred.promise;
   }
 
   this.getRooms = function(){
@@ -169,13 +175,37 @@ angular.module('starter.services', [])
     return deferred.promise;
   }
 
-  this.closeChat = function(room_key){
+  this.exitChat = function(room_key){
     getKey = function(key){
       return key;
     };
     var user = AuthService.getUser(),
         deferred = $q.defer();
-    _firebase.child("rooms").child(getKey(room_key)).child("people").child(user.uid).set(null);
-
+    _firebase.child("rooms").child(getKey(room_key)).child("people").child(user.uid)
+    .set(null, function(error){
+      if(error){
+        deferred.reject(error);
+      }
+      else{
+        _firebase.child("rooms").child(getKey(room_key)).once("value",function(snapshot){
+            var hasPeople = snapshot.hasChild("people");
+            if(!hasPeople){
+              _firebase.child("rooms").child(getKey(room_key))
+              .set(null, function(error){
+                if(error){
+                  console.log(error);
+                }
+                else{
+                  deferred.resolve("OK");
+                }
+              });
+            }
+            else{
+              deferred.resolve("OK");
+            }
+        })
+      }
+    });
+    return deferred.promise;
   }
 });

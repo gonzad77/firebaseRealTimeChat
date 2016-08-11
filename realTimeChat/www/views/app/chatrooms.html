@@ -1,4 +1,4 @@
-<ion-view>
+<ion-view cache-view="false">
     <ion-content>
           <div class="list list-inset">
             <ion-header-bar class="item bar-positive">
@@ -8,6 +8,10 @@
                 </button>
               </div>
             </ion-header-bar>
+            <ion-refresher class="item"
+                pulling-text="Pull to refresh..."
+                on-refresh="doRefresh()">
+            </ion-refresher>
             <ion-list ng-show="rooms" class="item">
               <ion-item class="item-icon-left" ng-repeat="room in rooms" type="item-text-wrap" ng-click="openChatRoom(room)">
                 <i class="icon ion-chatbubble-working"></i>
