@@ -10,14 +10,16 @@
         </ion-header-bar>
 
         <ion-list class="item">
-
-
-         </ion-list>
-
+          <ion-item ng-repeat="chat in chats" type="item-text-wrap">
+                <h4>{{chat.email}} :</h4>
+                <span am-time-ago="chat.date" class="item-note">
+                </span>
+                <p>{{chat.text}}</p>
+          </ion-item>
+        </ion-list>
       </div>
     </ion-content>
     <ion-footer-bar>
-      <!-- <ion-list class="item"> -->
         <ion-item class="item item-input-inset">
           <label class="item-input-wrapper">
               <input type="text" ng-model="m.textMessage" placeholder="Type in your message...">
@@ -25,7 +27,6 @@
           <button ng-click="sendMessage(m.textMessage)" class="button button-icon ion-android-send">
           </button>
         </ion-item>
-      <!-- <ion-list> -->
     </ion-footer-bar>
 
 </ion-view>

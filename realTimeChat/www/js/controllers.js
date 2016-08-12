@@ -37,7 +37,7 @@ angular.module('starter.controllers', [])
     };
   })
 
-.controller('ChatCtrl', function($scope, $state, $ionicLoading, $stateParams, ChatService) {
+.controller('ChatCtrl', function($scope, $state, $ionicLoading, $stateParams, ChatService, AuthService) {
   var room_key = $stateParams.roomKey;
   ChatService.getName(room_key)
   .then(function(name){
@@ -46,6 +46,13 @@ angular.module('starter.controllers', [])
     console.log(error);
   });
 
+  ChatService.getChats(room_key)
+  .then(function(result){
+    $scope.chats = result;
+  }, function(error){
+    console.log(error);
+  })
+
   $scope.close = function(){
     ChatService.exitChat(room_key)
     .then(function(result){
@@ -53,6 +60,16 @@ angular.module('starter.controllers', [])
     },function(error){
       console.log(error);
     });
+  }
+
+  $scope.sendMessage = function(message){
+    var user = AuthService.getUser();
+    ChatService.addMessage(room_key,message,user)
+    .then(function(result){
+        console.log(result);
+    },function(error){
+        console.log(error);
+    })
   }
 })
 

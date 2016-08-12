@@ -161,6 +161,28 @@ angular.module('starter.services', [])
 .service('ChatService', function($q, AuthService){
   var _firebase = new Firebase("https://ionicthemeschat.firebaseio.com/");
 
+  this.getChats = function(room_key){
+    var deferred = $q.defer();
+    getKey = function(key){
+      return key;
+    };
+    _firebase.child('rooms').child(getKey(room_key)).child("messages").limitToLast(5).once("value",function(snapshot){
+      var chat_promises = [];
+      snapshot.forEach(function(childSnapshot){
+        var deferredChat = $q.defer();
+        chat_promises.push(deferredChat.promise);
+        deferredChat.resolve(childSnapshot.val());
+      })
+      $q.all(chat_promises)
+      .then(function(result){
+        deferred.resolve(result);
+      })
+    }, function(error){
+      deferred.reject(error);
+    })
+    return deferred.promise;
+  }
+
   this.getName = function(room_key){
     var deferred = $q.defer();
     getKey = function(key){
@@ -175,6 +197,7 @@ angular.module('starter.services', [])
     return deferred.promise;
   }
 
+  //Borrar mensajes si se disuelve el chat
   this.exitChat = function(room_key){
     getKey = function(key){
       return key;
@@ -208,4 +231,29 @@ angular.module('starter.services', [])
     });
     return deferred.promise;
   }
+
+  //Agregar una nueva ruta para los mensajes (mensajes/roomId/mensajeID)
+  //Al borrar un room se borran sus mensajes
+  this.addMessage = function(room_key,message,user){
+    getKey = function(key){
+      return room_key;
+    };
+    var deferred = $q.defer();
+    _firebase.child("rooms").child(getKey(room_key)).child("messages")
+    .push({
+      text: message,
+      email: user.password.email,
+      picture: user.password.profileImageURL,
+      date: Firebase.ServerValue.TIMESTAMP
+    }, function(error){
+      if(error){
+        deferred.reject(error);
+      }
+      else{
+        deferred.resolve("OK");
+      }
+    })
+    return deferred.promise;
+  }
+
 });
