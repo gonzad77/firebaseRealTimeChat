@@ -9,24 +9,32 @@
           </div>
         </ion-header-bar>
 
-        <ion-list class="item">
+        <!-- <ion-list class="item"> -->
           <ion-item ng-repeat="chat in chats" type="item-text-wrap">
+            <div class="row">
+              <div class="col col-20">
+                <pre-img ratio="_1_1" helper-class="avatar-image">
+                  <img ng-src="{{ chat.picture }}" spinner-on-load style="width:100%">
+                </pre-img>
+              </div>
+              <div class="col col-80">
                 <h4>{{chat.email}} :</h4>
-                <span am-time-ago="chat.date" class="item-note">
-                </span>
                 <p>{{chat.text}}</p>
+              </div>
+            </div>
           </ion-item>
-        </ion-list>
-      </div>
+        <!-- </ion-list> -->
+
+    </div>
     </ion-content>
-    <ion-footer-bar>
-        <ion-item class="item item-input-inset">
-          <label class="item-input-wrapper">
-              <input type="text" ng-model="m.textMessage" placeholder="Type in your message...">
-          </label>
-          <button ng-click="sendMessage(m.textMessage)" class="button button-icon ion-android-send">
-          </button>
-        </ion-item>
+
+    <ion-footer-bar class="row">
+        <div class="col col-80">
+              <input type="text" ng-model="m.textMessage" placeholder="Type in your message..." style="width:100%">
+        </div>
+        <div class="col col-20">
+          <button ng-click="sendMessage(m.textMessage)" class="button button-icon ion-android-send"></button>
+        </div>
     </ion-footer-bar>
 
 </ion-view>

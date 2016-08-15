@@ -16,6 +16,7 @@
               <ion-item class="item-icon-left" ng-repeat="room in rooms" type="item-text-wrap" ng-click="openChatRoom(room)">
                 <i class="icon ion-chatbubble-working"></i>
                 <h2>{{room.name}}</h2>
+                <h2>{{room.people}}/{{room.number}}</h2>
               </ion-item>
             </ion-list>
           </div>

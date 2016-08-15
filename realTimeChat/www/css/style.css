@@ -10,3 +10,9 @@
 .form_group{
   margin-bottom: 20px;
 }
+
+.item p{
+  overflow: visible;
+  white-space: normal;
+  text-overflow: initial;
+}

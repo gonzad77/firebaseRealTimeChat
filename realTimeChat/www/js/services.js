@@ -83,18 +83,23 @@ angular.module('starter.services', [])
     var deferred = $q.defer(),
         exists = 'false',
         all_rooms = 'false';
-    _firebase.child('rooms').once('value', function(snapshot){
-      snapshot.forEach(function(childSnapshot){
-        var room_name = snapshot.child(childSnapshot.key()).child('name').val();
-        if(room_name == room.roomName){
-          deferred.reject("This name has been taken");
-          exists = 'true';
-        }
-      })
-      if(exists == 'false'){
-        var push_ref = _firebase.child('rooms').push({'name' : room.roomName});
-        var key = push_ref.key();
-        _firebase.child('rooms').child(push_ref.key()).child('people').child(user.uid).set({'email': user.password.email,
+    if(room.number < 2){
+      deferred.reject("The number of people must be 2 or more");
+    }
+    else{
+      _firebase.child('rooms').once('value', function(snapshot){
+        snapshot.forEach(function(childSnapshot){
+          var room_name = snapshot.child(childSnapshot.key()).child('name').val();
+          if(room_name == room.roomName){
+            deferred.reject("This name has been taken");
+            exists = 'true';
+          }
+        })
+        if(exists == 'false'){
+          var push_ref = _firebase.child('rooms').push({'name' : room.roomName,
+                                                        'number' : room.number});
+          var key = push_ref.key();
+          _firebase.child('rooms').child(push_ref.key()).child('people').child(user.uid).set({'email': user.password.email,
                                                       'image' : user.password.profileImageURL},
                                                         function(error){
                                                           if(error){
@@ -106,6 +111,7 @@ angular.module('starter.services', [])
                                                         });
       }
     })
+  }
     return deferred.promise;
   }
 
@@ -115,6 +121,12 @@ angular.module('starter.services', [])
     _firebase.child('rooms').once('value', function(snapshot){
       var existsRoom = snapshot.child(room.room_key).exists();
       if(existsRoom){
+        var maxPeople = snapshot.child(room.room_key).child('number').val();
+        var actualPeople = snapshot.child(room.room_key).child('people').numChildren();
+        if(maxPeople <= actualPeople){
+          deferred.reject("This room is full, try again later");
+        }
+        else{
         _firebase.child('rooms').child(room.room_key).child('people').child(user.uid).set({'email': user.password.email,
                                                       'image' : user.password.profileImageURL},
                                                         function(error){
@@ -125,6 +137,8 @@ angular.module('starter.services', [])
                                                             deferred.resolve("OK");
                                                           }
                                                         });
+
+          }
       }
       else{
         deferred.reject("This room has been closed");
@@ -142,8 +156,12 @@ angular.module('starter.services', [])
         var deferredRoom = $q.defer();
         var room_key = childSnapshot.key();
         var room_name = snapshot.child(childSnapshot.key()).child('name').val();
+        var room_number = snapshot.child(childSnapshot.key()).child('number').val();
+        var room_people = snapshot.child(childSnapshot.key()).child('people').numChildren();
         room_promises.unshift(deferredRoom.promise);
         var room = {name: room_name,
+                    number: room_number,
+                    people: room_people,
                     room_key: room_key}
         deferredRoom.resolve(room);
       })
@@ -232,8 +250,7 @@ angular.module('starter.services', [])
     return deferred.promise;
   }
 
-  //Agregar una nueva ruta para los mensajes (mensajes/roomId/mensajeID)
-  //Al borrar un room se borran sus mensajes
+
   this.addMessage = function(room_key,message,user){
     getKey = function(key){
       return room_key;

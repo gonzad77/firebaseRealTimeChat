@@ -67,6 +67,7 @@ angular.module('starter.controllers', [])
     ChatService.addMessage(room_key,message,user)
     .then(function(result){
         console.log(result);
+
     },function(error){
         console.log(error);
     })
@@ -92,10 +93,12 @@ angular.module('starter.controllers', [])
     .then(function(result){
       $state.go('app.chat', {roomKey: room.room_key});
     }, function(error){
-      var rooms = _.filter($scope.rooms, function(item){
+      if(error == "This room has been closed"){
+        var rooms = _.filter($scope.rooms, function(item){
         item.key == room.room_key;
-      })
-      $scope.rooms = rooms;
+        })
+        $scope.rooms = rooms;
+      }
       console.log(error);
     })
   }
@@ -105,8 +108,8 @@ angular.module('starter.controllers', [])
 
       // An elaborate, custom popup
       var myPopup = $ionicPopup.show({
-        template: '<input type="text" ng-model="data.roomName">',
-        title: 'Enter room name',
+        template: '<input type="text" ng-model="data.roomName" placeholder="Name..."><br><input type="number" ng-model="data.number" placeholder="Number of people...">',
+        title: 'Enter room properties',
         subTitle: 'Please use normal things',
         scope: $scope,
         buttons: [
@@ -115,7 +118,7 @@ angular.module('starter.controllers', [])
             text: '<b>Create</b>',
             type: 'button-positive',
             onTap: function(e) {
-              if (!$scope.data.roomName) {
+              if (!$scope.data.roomName || !$scope.data.number) {
                 //don't allow the user to close unless he enters the chat room name
                 e.preventDefault();
               } else {
