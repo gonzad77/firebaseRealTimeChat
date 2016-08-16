@@ -19,11 +19,9 @@
                 <h2>{{room.people}}/{{room.number}}</h2>
               </ion-item>
             </ion-list>
-          </div>
-        <ion-list ng-hide="rooms.length">
-            <ion-item class="textCenter">
-                <i class="icon ion-loading-c"></i> Loading Rooms
-            </ion-item>
-        </ion-list>
+            <label ng-show="rooms.length == 0">
+                  No room has been created
+            </label>
+          </div>      
     </ion-content>
 </ion-view>

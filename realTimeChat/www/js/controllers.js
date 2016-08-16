@@ -37,7 +37,7 @@ angular.module('starter.controllers', [])
     };
   })
 
-.controller('ChatCtrl', function($scope, $state, $ionicLoading, $stateParams, ChatService, AuthService) {
+.controller('ChatCtrl', function($scope, $state, $ionicLoading, $stateParams, ChatService, AuthService, $cordovaCamera, $ionicPlatform) {
   var room_key = $stateParams.roomKey;
   ChatService.getName(room_key)
   .then(function(name){
@@ -71,6 +71,35 @@ angular.module('starter.controllers', [])
     },function(error){
         console.log(error);
     })
+  }
+
+  $scope.loadImage = function(){
+    var user = AuthService.getUser();
+    $ionicPlatform.ready(function() {
+      var options = {
+        quality: 100,
+        destinationType: Camera.DestinationType.DATA_URL,
+        sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+        allowEdit: true,
+        encodingType: Camera.EncodingType.JPEG,
+        targetWidth: 200,
+        targetHeight: 200,
+        //popoverOptions: CameraPopoverOptions,
+        saveToPhotoAlbum: false
+      };
+      $cordovaCamera.getPicture(options)
+       .then(function (imageData) {
+          var image = "data:image/jpeg;base64," + imageData;
+          ChatService.sendImage(image, user, room_key)
+          .then(function(result){
+            console.log(result);
+          },function(error){
+            console.log(error);
+          })
+        }, function(error) {
+          console.log(error)
+        });
+    });
   }
 })
 

@@ -273,4 +273,26 @@ angular.module('starter.services', [])
     return deferred.promise;
   }
 
+  this.sendImage = function(image, user, room_key){
+    getKey = function(key){
+      return room_key;
+    };
+    var deferred = $q.defer();
+    _firebase.child("rooms").child(getKey(room_key)).child("messages")
+    .push({
+      image: image,
+      email: user.password.email,
+      picture: user.password.profileImageURL,
+      date: Firebase.ServerValue.TIMESTAMP
+    },function(error){
+      if(error){
+        deferred.reject(error);
+      }
+      else{
+        deferred.resolve("OK");
+      }
+    })
+    return deferred.promise;
+  }
+
 });

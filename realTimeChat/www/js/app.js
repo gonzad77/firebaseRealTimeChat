@@ -8,7 +8,7 @@ angular.module('underscore', [])
   return window._; // assumes underscore has already been loaded on the page
 });
 
-angular.module('starter', ['ionic','firebase','starter.controllers','starter.services','underscore'])
+angular.module('starter', ['ionic','firebase','starter.controllers','starter.services','underscore','ngCordova'])
 
 .run(function($ionicPlatform, $rootScope, $state, AuthService) {
   $ionicPlatform.ready(function(){

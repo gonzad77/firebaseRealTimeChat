@@ -20,6 +20,7 @@
               <div class="col col-80">
                 <h4>{{chat.email}} :</h4>
                 <p>{{chat.text}}</p>
+                <img data-ng-src="{{chat.image}}">
               </div>
             </div>
           </ion-item>
@@ -29,11 +30,14 @@
     </ion-content>
 
     <ion-footer-bar class="row">
-        <div class="col col-80">
+        <div class="col col-60">
               <input type="text" ng-model="m.textMessage" placeholder="Type in your message..." style="width:100%">
         </div>
         <div class="col col-20">
           <button ng-click="sendMessage(m.textMessage)" class="button button-icon ion-android-send"></button>
+        </div>
+        <div class="col col-20">
+          <button ng-click="loadImage()" class="button button-icon ion-ios-camera"></button>
         </div>
     </ion-footer-bar>
 
