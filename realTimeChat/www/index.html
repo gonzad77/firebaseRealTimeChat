@@ -29,12 +29,35 @@
     <script src="js/services.js"></script>
   </head>
   <body ng-app="starter">
-
-    <ion-pane>
+    <ion-nav-view>
+    <ion-side-menus enable-menu-with-back-views="false">
+    <ion-side-menu-content>
       <ion-header-bar class="bar-stable">
         <h1 class="title">Real Time Chat</h1>
       </ion-header-bar>
       <ion-nav-view name="main-view"></ion-nav-view>
-    </ion-pane>
+    </ion-side-menu-content>
+    <ion-side-menu side="left">
+      <ion-content has-bouncing="false" scroll="false" class="menu-outer left-menu">
+        <ion-list class="menu-items-list">
+          <div class="row">
+            <div class="col col-center">
+              <ion-item ui-sref-active="active" class="item-icon-left item-icon-right" menu-close ui-sref="app.profile">
+                <i class="menu-icon icon ion-happy-outline"></i>
+                <h2 class="menu-text">Feed</h2>
+                <i class="item-pointer-icon icon ion-chevron-right"></i>
+              </ion-item>
+              <ion-item class="item-icon-left item-icon-right" menu-close ng-click="logout()">
+                <i class="menu-icon icon ion-close"></i>
+                <h2 class="menu-text">People</h2>
+                <i class="item-pointer-icon icon ion-chevron-right"></i>
+              </ion-item>
+            </div>
+          </div>
+        </ion-list>
+      </ion-content>
+    </ion-side-menu>
+  </ion-side-menus>
+  </ion-nav-view>
   </body>
 </html>

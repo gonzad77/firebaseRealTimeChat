@@ -1,13 +1,17 @@
 <ion-view cache-view="false">
     <ion-content>
           <div class="list list-inset">
-            <ion-header-bar class="item bar-positive">
-              <h1 class="title">Create room</h1>
-              <div class="buttons">
-                <button class="button button-icon ion-compose" ng-click="showPopUp()">
-                </button>
-              </div>
+
+            <ion-header-bar class="item bar-positive" align-title="center">
+                <button menuToggle="left" class="button button-icon ion-navicon-round"></button>
+
+                <h1 class="title">Rooms</h1>
+
+                <button class="button button-icon ion-plus-round" ng-click="showPopUp()"> </button>
+
             </ion-header-bar>
+
+          
             <ion-refresher class="item"
                 pulling-text="Pull to refresh..."
                 on-refresh="doRefresh()">
@@ -22,6 +26,6 @@
             <label ng-show="rooms.length == 0">
                   No room has been created
             </label>
-          </div>      
+          </div>
     </ion-content>
 </ion-view>
