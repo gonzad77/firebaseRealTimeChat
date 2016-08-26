@@ -37,6 +37,19 @@ angular.module('starter.controllers', [])
     };
   })
 
+.controller('ProfileCtrl', function($scope,$state,AuthService){
+    var user = AuthService.getUser();
+
+    // $scope.image = ;
+    // $scope.email = ;
+})
+
+.controller('SideMenuCtrl', function($scope,$state,AuthService){
+  $scope.logout = function(){
+    $scope.logout = AuthService.doLogout();
+  }
+})
+
 .controller('ChatCtrl', function($scope, $state, $ionicLoading, $stateParams, ChatService, AuthService, $cordovaCamera, $ionicPlatform) {
   var room_key = $stateParams.roomKey;
   ChatService.getName(room_key)

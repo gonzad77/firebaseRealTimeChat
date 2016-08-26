@@ -72,6 +72,10 @@ angular.module('starter.services', [])
     return deferred.promise;
   };
 
+  this.doLogout = function(){
+     _firebase.unauth();
+  }
+
 })
 
 .service('ChatRoomService', function($q, AuthService){

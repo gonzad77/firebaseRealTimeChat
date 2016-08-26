@@ -123,6 +123,19 @@ angular.module('starter', ['ionic','firebase','starter.controllers','starter.ser
     }
   })
 
+  .state('app.profile',{
+    url: '/profile',
+    views: {
+      'main-view@': {
+        templateUrl: 'views/app/profile.html',
+        controller: 'ProfileCtrl'
+      }
+    },
+    data: {
+      authenticate: true
+    }
+  })
+
   ;
 
   // if none of the above states are matched, use this as the fallback
